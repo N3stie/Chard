@@ -5,51 +5,79 @@ const playIcon = document.querySelector('.play-icon');
 const pauseIcon = document.querySelector('.pause-icon');
 const musicPlayer = document.querySelector('.music-player');
 
-// Set volume to 40%
-bgMusic.volume = 0.4;
+// Birthday countdown
+const birthday = new Date('2026-11-14T00:00:00');
+const countdownElements = {
+    days: document.getElementById('days'),
+    hours: document.getElementById('hours'),
+    minutes: document.getElementById('minutes'),
+    seconds: document.getElementById('seconds')
+};
 
-// Try to play automatically
-function initAudio() {
-    bgMusic.play().then(() => {
-        // Autoplay successful
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'inline';
-        musicPlayer.classList.remove('paused');
-    }).catch(error => {
-        // Autoplay blocked - show play button
-        console.log('Click anywhere to play music');
-        playIcon.style.display = 'inline';
-        pauseIcon.style.display = 'none';
-        musicPlayer.classList.add('paused');
-    });
+function updateCountdown() {
+    const remaining = Math.max(0, birthday.getTime() - Date.now());
+    const totalSeconds = Math.floor(remaining / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    countdownElements.days.textContent = days;
+    countdownElements.hours.textContent = String(hours).padStart(2, '0');
+    countdownElements.minutes.textContent = String(minutes).padStart(2, '0');
+    countdownElements.seconds.textContent = String(seconds).padStart(2, '0');
 }
 
-// Toggle play/pause when button is clicked
-musicToggle.addEventListener('click', function() {
-    if (bgMusic.paused) {
-        bgMusic.play();
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'inline';
-        musicPlayer.classList.remove('paused');
-    } else {
-        bgMusic.pause();
-        playIcon.style.display = 'inline';
-        pauseIcon.style.display = 'none';
-        musicPlayer.classList.add('paused');
-    }
-});
+updateCountdown();
+setInterval(updateCountdown, 1000);
 
-// Try to play when user clicks anywhere (if autoplay blocked)
-document.addEventListener('click', function playOnClick() {
-    if (bgMusic.paused) {
+if (bgMusic && musicToggle && playIcon && pauseIcon && musicPlayer) {
+    // Set volume to 40%
+    bgMusic.volume = 0.4;
+
+    // Try to play automatically
+    function initAudio() {
         bgMusic.play().then(() => {
+            // Autoplay successful
             playIcon.style.display = 'none';
             pauseIcon.style.display = 'inline';
             musicPlayer.classList.remove('paused');
-        }).catch(() => {});
+        }).catch(error => {
+            // Autoplay blocked - show play button
+            console.log('Click anywhere to play music');
+            playIcon.style.display = 'inline';
+            pauseIcon.style.display = 'none';
+            musicPlayer.classList.add('paused');
+        });
     }
-    document.removeEventListener('click', playOnClick);
-}, { once: true });
 
-// Initialize on page load
-window.addEventListener('load', initAudio);
+    // Toggle play/pause when button is clicked
+    musicToggle.addEventListener('click', function() {
+        if (bgMusic.paused) {
+            bgMusic.play();
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'inline';
+            musicPlayer.classList.remove('paused');
+        } else {
+            bgMusic.pause();
+            playIcon.style.display = 'inline';
+            pauseIcon.style.display = 'none';
+            musicPlayer.classList.add('paused');
+        }
+    });
+
+    // Try to play when user clicks anywhere (if autoplay blocked)
+    document.addEventListener('click', function playOnClick() {
+        if (bgMusic.paused) {
+            bgMusic.play().then(() => {
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'inline';
+                musicPlayer.classList.remove('paused');
+            }).catch(() => {});
+        }
+        document.removeEventListener('click', playOnClick);
+    }, { once: true });
+
+    // Initialize on page load
+    window.addEventListener('load', initAudio);
+}
