@@ -45,7 +45,10 @@ const botReply = document.getElementById('bot-reply');
 const botOptionsContainer = document.getElementById('bot-options');
 const botOptions = document.querySelectorAll('.bot-option');
 const botCodeRequest = document.getElementById('bot-code-request');
-const initialBotOptions = document.querySelectorAll('.bot-option:not(.bot-follow-up)');
+const botPlease = document.getElementById('bot-please');
+const botNevermind = document.getElementById('bot-nevermind');
+const initialBotOptions = document.querySelectorAll('.bot-option[data-reply]');
+const prankOptions = document.querySelectorAll('.bot-prank-option');
 const openingQuestion = 'What are you doing here?';
 
 const botStates = {
@@ -66,6 +69,11 @@ function resetBotConversation() {
     botQuestion.textContent = openingQuestion;
     botReply.classList.remove('is-visible');
     botCodeRequest.classList.remove('is-visible');
+    botCodeRequest.disabled = false;
+    prankOptions.forEach((option) => {
+        option.classList.remove('is-visible');
+        option.disabled = false;
+    });
     botOptionsContainer.classList.add('is-ready');
     initialBotOptions.forEach((option) => {
         option.disabled = false;
@@ -153,10 +161,40 @@ botCodeRequest.addEventListener('click', () => {
         window.setTimeout(() => {
             botReply.textContent = 'You already know just look and listen and learn XD XD';
             botReply.classList.add('is-visible');
+            prankOptions.forEach((option) => {
+                option.classList.add('is-visible');
+                option.disabled = false;
+            });
+            botOptionsContainer.classList.add('is-ready');
+            setBotState('listening');
         }, 450);
     }, 700);
+});
 
-    window.setTimeout(resetBotConversation, 2800);
+botNevermind.addEventListener('click', resetBotConversation);
+
+botPlease.addEventListener('click', () => {
+    botPlease.disabled = true;
+    botNevermind.disabled = true;
+    botOptionsContainer.classList.remove('is-ready');
+    botReply.textContent = 'okay, wait for 10secs... 10';
+    botReply.classList.add('is-visible');
+    setBotState('talking');
+
+    let secondsLeft = 10;
+    const countdownTimer = window.setInterval(() => {
+        secondsLeft -= 1;
+
+        if (secondsLeft > 0) {
+            botReply.textContent = `okay, wait for 10secs... ${secondsLeft}`;
+            return;
+        }
+
+        window.clearInterval(countdownTimer);
+        botReply.textContent = 'its a prank!! bahala ka jan';
+        setBotState('talking');
+        window.setTimeout(resetBotConversation, 2800);
+    }, 1000);
 });
 
 const codeForm = document.getElementById('code-form');

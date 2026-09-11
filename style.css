@@ -457,6 +457,14 @@ body {
     display: block;
 }
 
+.bot-prank-option {
+    display: none;
+}
+
+.bot-prank-option.is-visible {
+    display: block;
+}
+
 .bot-option,
 .bot-open {
     color: #111;
