@@ -7,6 +7,8 @@ const musicPlayer = document.querySelector('.music-player');
 
 // Birthday countdown
 const birthday = new Date('2026-11-14T00:00:00');
+const afterCountdownCode = 'NOVEMBER14';
+const todayCode = 'ILOVERIA08';
 const countdownElements = {
     days: document.getElementById('days'),
     hours: document.getElementById('hours'),
@@ -15,6 +17,7 @@ const countdownElements = {
 };
 
 function updateCountdown() {
+    const countdownFinished = Date.now() >= birthday.getTime();
     const remaining = Math.max(0, birthday.getTime() - Date.now());
     const totalSeconds = Math.floor(remaining / 1000);
     const days = Math.floor(totalSeconds / 86400);
@@ -26,10 +29,40 @@ function updateCountdown() {
     countdownElements.hours.textContent = String(hours).padStart(2, '0');
     countdownElements.minutes.textContent = String(minutes).padStart(2, '0');
     countdownElements.seconds.textContent = String(seconds).padStart(2, '0');
+
+    document.body.classList.toggle('countdown-finished', countdownFinished);
 }
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+const codeForm = document.getElementById('code-form');
+const codeInput = document.getElementById('special-code');
+const codeStatus = document.getElementById('code-status');
+
+if (codeForm && codeInput && codeStatus) {
+    codeForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const submittedCode = codeInput.value.trim().toUpperCase();
+        const countdownFinished = Date.now() >= birthday.getTime();
+        const isTodayCode = submittedCode === todayCode;
+        const isAfterCountdownCode = submittedCode === afterCountdownCode && countdownFinished;
+
+        if (isTodayCode || isAfterCountdownCode) {
+            codeStatus.textContent = 'Code accepted. Your surprise is ready.';
+            codeStatus.className = 'code-status success';
+            window.location.href = 'surprise.html';
+            return;
+        }
+
+        codeStatus.textContent = submittedCode === afterCountdownCode
+            ? 'That code will work when the countdown reaches zero.'
+            : 'That code is not quite right. Try again.';
+        codeStatus.className = 'code-status error';
+        codeInput.select();
+    });
+}
 
 if (bgMusic && musicToggle && playIcon && pauseIcon && musicPlayer) {
     // Set volume to 40%
