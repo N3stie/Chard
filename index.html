@@ -218,6 +218,22 @@
         <p>Made with ❤️ for an amazing friend</p>
     </footer>
 
+    <aside id="countdown-bot" class="countdown-bot" aria-label="Countdown bot">
+        <button id="bot-close" class="bot-close" type="button" aria-label="Close countdown bot">&times;</button>
+        <img id="bot-avatar" class="bot-avatar" src="images/listening.JPG" alt="You listening">
+        <div class="bot-content">
+            <p class="bot-name">Countdown Bot</p>
+            <p class="bot-question">What are you doing here?</p>
+            <div id="bot-options" class="bot-options">
+                <button class="bot-option" type="button" data-reply="visiting">Just visiting the page</button>
+                <button class="bot-option" type="button" data-reply="hint">Trying to find a hint to the code</button>
+                <button id="bot-code-request" class="bot-option bot-follow-up" type="button">Can you please tell me the code?</button>
+            </div>
+            <p id="bot-reply" class="bot-reply" role="status" aria-live="polite"></p>
+        </div>
+    </aside>
+    <button id="bot-open" class="bot-open" type="button">Ask the bot</button>
+
     <script src="script.js"></script>
 
 </body>

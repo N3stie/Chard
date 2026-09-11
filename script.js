@@ -36,6 +36,129 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
+const countdownBot = document.getElementById('countdown-bot');
+const botOpen = document.getElementById('bot-open');
+const botClose = document.getElementById('bot-close');
+const botAvatar = document.getElementById('bot-avatar');
+const botQuestion = document.querySelector('.bot-question');
+const botReply = document.getElementById('bot-reply');
+const botOptionsContainer = document.getElementById('bot-options');
+const botOptions = document.querySelectorAll('.bot-option');
+const botCodeRequest = document.getElementById('bot-code-request');
+const initialBotOptions = document.querySelectorAll('.bot-option:not(.bot-follow-up)');
+const openingQuestion = 'What are you doing here?';
+
+const botStates = {
+    listening: { image: 'images/listening.JPG', alt: 'You listening' },
+    thinking: { image: 'images/thinking.JPG', alt: 'You thinking' },
+    talking: { image: 'images/talking.JPG', alt: 'You talking' }
+};
+
+function setBotState(state) {
+    const nextState = botStates[state];
+    botAvatar.src = nextState.image;
+    botAvatar.alt = nextState.alt;
+    countdownBot.classList.toggle('is-talking', state === 'talking');
+}
+
+function resetBotConversation() {
+    setBotState('listening');
+    botQuestion.textContent = openingQuestion;
+    botReply.classList.remove('is-visible');
+    botCodeRequest.classList.remove('is-visible');
+    botOptionsContainer.classList.add('is-ready');
+    initialBotOptions.forEach((option) => {
+        option.disabled = false;
+    });
+}
+
+function updateBotVisibility() {
+    const countdownFinished = Date.now() >= birthday.getTime();
+
+    if (countdownFinished) {
+        countdownBot?.classList.remove('is-visible');
+        botOpen?.classList.remove('is-visible');
+    } else if (!countdownBot?.classList.contains('has-been-closed')) {
+        countdownBot?.classList.add('is-visible');
+    }
+}
+
+updateBotVisibility();
+
+window.setTimeout(() => {
+    if (Date.now() < birthday.getTime()) {
+        setBotState('talking');
+        window.setTimeout(() => {
+            setBotState('listening');
+            botOptionsContainer?.classList.add('is-ready');
+        }, 850);
+    }
+}, 500);
+
+botClose?.addEventListener('click', () => {
+    countdownBot.classList.remove('is-visible');
+    countdownBot.classList.add('has-been-closed');
+    botOpen.classList.add('is-visible');
+});
+
+botOpen?.addEventListener('click', () => {
+    countdownBot.classList.add('is-visible');
+    countdownBot.classList.remove('has-been-closed');
+    botOpen.classList.remove('is-visible');
+});
+
+initialBotOptions.forEach((option) => {
+    option.addEventListener('click', () => {
+        const isHintRequest = option.dataset.reply === 'hint';
+        botOptionsContainer.classList.remove('is-ready');
+        botOptions.forEach((botOption) => {
+            botOption.disabled = true;
+        });
+        botReply.classList.remove('is-visible');
+        botQuestion.textContent = openingQuestion;
+        setBotState('thinking');
+
+        window.setTimeout(() => {
+            setBotState('talking');
+            window.setTimeout(() => {
+                if (isHintRequest) {
+                    botQuestion.textContent = 'I found a clue. Do you know the code?';
+                    botCodeRequest.classList.add('is-visible');
+                    botOptionsContainer.classList.add('is-ready');
+                    setBotState('listening');
+                    botCodeRequest.disabled = false;
+                    return;
+                }
+
+                botReply.textContent = 'Welcome, curious visitor. You picked a lovely time to stop by.';
+                botReply.classList.add('is-visible');
+            }, 450);
+        }, 700);
+
+        if (!isHintRequest) {
+            window.setTimeout(resetBotConversation, 2800);
+        }
+    });
+});
+
+botCodeRequest.addEventListener('click', () => {
+    botCodeRequest.disabled = true;
+    botCodeRequest.classList.remove('is-visible');
+    botOptionsContainer.classList.remove('is-ready');
+    botQuestion.textContent = 'Can you please tell me the code?';
+    setBotState('thinking');
+
+    window.setTimeout(() => {
+        setBotState('talking');
+        window.setTimeout(() => {
+            botReply.textContent = 'You already know just look and listen and learn XD XD';
+            botReply.classList.add('is-visible');
+        }, 450);
+    }, 700);
+
+    window.setTimeout(resetBotConversation, 2800);
+});
+
 const codeForm = document.getElementById('code-form');
 const codeInput = document.getElementById('special-code');
 const codeStatus = document.getElementById('code-status');
