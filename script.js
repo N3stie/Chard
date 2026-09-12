@@ -130,7 +130,7 @@ initialBotOptions.forEach((option) => {
             setBotState('talking');
             window.setTimeout(() => {
                 if (isHintRequest) {
-                    botQuestion.textContent = 'I found a clue. Do you know the code?';
+                    botQuestion.textContent = 'Hmm... it will be a number and a letter, so give your best to solve it.';
                     botCodeRequest.classList.add('is-visible');
                     botOptionsContainer.classList.add('is-ready');
                     setBotState('listening');
