@@ -7,7 +7,7 @@ const musicPlayer = document.querySelector('.music-player');
 
 // Birthday countdown
 const birthday = new Date('2026-11-14T00:00:00');
-const afterCountdownCode = 'NOVEMBER14';
+const afterCountdownCode = '11-14-2026';
 const todayCode = '!@#$%^&*()RIA';
 const countdownElements = {
     days: document.getElementById('days'),
