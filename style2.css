@@ -159,6 +159,52 @@ h1 {
     border-top: 1px solid rgba(38, 33, 45, 0.15);
 }
 
+.final-reveal {
+    margin-top: 4rem;
+    padding: 3rem 1.5rem;
+    border: 1px solid rgba(242, 107, 94, 0.35);
+    border-radius: 20px;
+    background: rgba(244, 189, 85, 0.16);
+    animation: reveal 0.8s ease both;
+}
+
+.final-reveal p:not(.section-kicker):not(.final-signature) {
+    max-width: 580px;
+}
+
+.final-signature {
+    color: var(--coral);
+    font-size: 1.15rem;
+    font-style: italic;
+}
+
+.message-actions {
+    margin-top: 3rem;
+}
+
+.download-button {
+    padding: 0.85rem 1.4rem;
+    color: var(--ink);
+    background: var(--gold);
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    font: bold 0.95rem Georgia, 'Times New Roman', serif;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.download-button:hover,
+.download-button:focus-visible {
+    background: #e9ac43;
+    transform: translateY(-3px);
+}
+
+.action-note {
+    margin: 0.75rem auto 0;
+    color: rgba(38, 33, 45, 0.6);
+    font-size: 0.85rem;
+}
+
 .section-kicker {
     margin: 0;
     color: var(--coral);
@@ -308,6 +354,23 @@ h1 {
     font-size: 0.85rem;
 }
 
+.next-surprise {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(38, 33, 45, 0.15);
+}
+
+.next-surprise-link {
+    display: inline-block;
+    text-decoration: none;
+}
+
+@media (max-width: 700px) {
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .heart {
     display: inline-block;
     color: var(--coral);
@@ -373,5 +436,37 @@ h1 {
 
     .video-grid {
         padding: 0;
+    }
+}
+
+@media print {
+    body {
+        display: block;
+        padding: 0;
+        background: #fff;
+    }
+
+    .surprise {
+        width: 100%;
+        padding: 1rem;
+        box-shadow: none;
+    }
+
+    .intro,
+    .memory-gallery,
+    .video-gallery,
+    .message-actions {
+        display: none;
+    }
+
+    .message {
+        display: block !important;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    .final-reveal.is-unlocked {
+        display: block !important;
     }
 }

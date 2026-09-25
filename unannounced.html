@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One More Thing</title>
+    <link rel="stylesheet" href="unannounced.css">
+</head>
+<body class="mahalo-page">
+    <main class="surprise">
+        <section class="intro" aria-labelledby="page-title">
+            <p class="kicker">Mahalo nui loa</p>
+            <h1 id="page-title">Until we meet again.</h1>
+            <p class="subtitle">A quiet thank you before this new chapter begins.</p>
+
+            <div class="letter-video-wrap">
+                <video class="letter-video" id="letter-video" controls playsinline preload="metadata" aria-label="Your farewell video">
+                    <source src="videos/unannounced.mp4" type="video/mp4">
+                </video>
+                <p class="video-status" id="video-status" role="status" aria-live="polite">Add your video at videos/unannounced.mp4. The message appears after it finishes.</p>
+            </div>
+
+            <section class="letter" id="letter" aria-labelledby="letter-title" hidden>
+                <p class="section-kicker">For Chard</p>
+                <h2 id="letter-title">Hey Chard,</h2>
+                <p>Kamusta ka? I know you're happy and striving through life, enjoying every ounce of it, and honestly, that makes my heart so full. I just wanna say, I'm going to attend BYU Hawaii. I'm sorry if I didn't tell you sooner. I'm still uncertain about sharing my plans with people, even my own parents. But you deserve to know, because you've been one of the biggest parts of my journey.</p>
+                <p>Thank you for the adventures you shared with me. The spontaneous trips, the laughs, the memories I'll carry with me wherever I go. Thank you for the foods and gifts, but more than that, thank you for the time and presence you gave so generously. You never had to, but you always did.</p>
+                <p>Thank you for being my bestfriend. Thank you for being my kapatid, even though we don't share the same blood. You've shown me that family isn't only about blood, it's about who shows up, who stays, and who loves you anyway. Thank you for welcoming me into your family, kay Tita, kay Tito, and kay Ate, who made me feel like I truly have a new home and a new family in you all. That's something I'll never forget as long as I live.</p>
+                <p>Thank you for everything, pre. I'm so grateful I got to become your friend and more. You've been a blessing I didn't know I needed, and I hope you know how much you mean to me. You came into my life and made everything feel a little lighter, a little warmer, a little more like home.</p>
+                <p>As I start this new chapter in Hawaii, I'll carry everything you've taught me. How to be kind, how to be present, how to love people well. I hope we don't lose touch, and I hope one day I can welcome you somewhere new the way you welcomed me.</p>
+                <p class="letter-signature">Mahalo nui loa, pre. Until we meet again, whether sa Hawaii, sa Pinas, or somewhere in between, ingat ka palagi. kapatid. Thank you for everything.</p>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        const video = document.getElementById('letter-video');
+        const videoStatus = document.getElementById('video-status');
+        const letter = document.getElementById('letter');
+
+        function revealLetter() {
+            letter.hidden = false;
+            letter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            videoStatus.textContent = 'The message is ready.';
+        }
+
+        video.addEventListener('ended', revealLetter);
+    </script>
+</body>
+</html>

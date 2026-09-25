@@ -275,3 +275,103 @@ if (bgMusic && musicToggle && playIcon && pauseIcon && musicPlayer) {
     // Initialize on page load
     window.addEventListener('load', initAudio);
 }
+
+// Free-walk sprite and click-to-slash interaction.
+const walker = document.getElementById('walker');
+
+if (walker) {
+    const movement = { up: false, down: false, left: false, right: false };
+    const position = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const roamVelocity = { x: 1.2, y: 0.7 };
+    const speed = 4;
+    let lastFrame = performance.now();
+    let nextDirectionChange = lastFrame + 2200;
+    let slashTimer;
+
+    function setMovement(key, isPressed) {
+        if (key === 'ArrowUp' || key.toLowerCase() === 'w') movement.up = isPressed;
+        if (key === 'ArrowDown' || key.toLowerCase() === 's') movement.down = isPressed;
+        if (key === 'ArrowLeft' || key.toLowerCase() === 'a') movement.left = isPressed;
+        if (key === 'ArrowRight' || key.toLowerCase() === 'd') movement.right = isPressed;
+    }
+
+    function keepInBounds() {
+        const halfWidth = walker.offsetWidth / 2;
+        const halfHeight = walker.offsetHeight / 2;
+        position.x = Math.max(halfWidth, Math.min(window.innerWidth - halfWidth, position.x));
+        position.y = Math.max(halfHeight, Math.min(window.innerHeight - halfHeight, position.y));
+    }
+
+    function moveWalker(now) {
+        const elapsed = Math.min(32, now - lastFrame);
+        lastFrame = now;
+        const horizontal = Number(movement.right) - Number(movement.left);
+        const vertical = Number(movement.down) - Number(movement.up);
+        const isMoving = horizontal !== 0 || vertical !== 0;
+
+        if (now >= nextDirectionChange) {
+            const angle = Math.random() * Math.PI * 2;
+            const roamSpeed = 0.9 + Math.random() * 1.2;
+            roamVelocity.x = Math.cos(angle) * roamSpeed;
+            roamVelocity.y = Math.sin(angle) * roamSpeed;
+            nextDirectionChange = now + 1800 + Math.random() * 2600;
+        }
+
+        if (isMoving) {
+            const length = Math.hypot(horizontal, vertical) || 1;
+            roamVelocity.x = (horizontal / length) * speed;
+            roamVelocity.y = (vertical / length) * speed;
+        } else {
+            position.x += roamVelocity.x * (elapsed / 16);
+            position.y += roamVelocity.y * (elapsed / 16);
+
+            const halfWidth = walker.offsetWidth / 2;
+            const halfHeight = walker.offsetHeight / 2;
+            if (position.x <= halfWidth || position.x >= window.innerWidth - halfWidth) {
+                roamVelocity.x *= -1;
+                position.x = Math.max(halfWidth, Math.min(window.innerWidth - halfWidth, position.x));
+            }
+            if (position.y <= halfHeight || position.y >= window.innerHeight - halfHeight) {
+                roamVelocity.y *= -1;
+                position.y = Math.max(halfHeight, Math.min(window.innerHeight - halfHeight, position.y));
+            }
+        }
+
+        keepInBounds();
+        walker.classList.add('is-walking');
+        walker.classList.toggle('is-facing-right', roamVelocity.x > 0);
+
+        walker.style.left = `${position.x}px`;
+        walker.style.top = `${position.y}px`;
+        window.requestAnimationFrame(moveWalker);
+    }
+
+    function slashAt(clientX, clientY) {
+        const mark = document.createElement('span');
+        mark.className = 'slash-mark';
+        mark.style.left = `${clientX - 32}px`;
+        mark.style.top = `${clientY - 32}px`;
+        document.body.appendChild(mark);
+        mark.addEventListener('animationend', () => mark.remove(), { once: true });
+        walker.classList.remove('is-slashing');
+        void walker.offsetWidth;
+        walker.classList.add('is-slashing');
+        window.clearTimeout(slashTimer);
+        slashTimer = window.setTimeout(() => walker.classList.remove('is-slashing'), 320);
+    }
+
+    window.addEventListener('keydown', (event) => {
+        setMovement(event.key, true);
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(event.key)) {
+            event.preventDefault();
+        }
+    });
+
+    window.addEventListener('keyup', (event) => setMovement(event.key, false));
+    window.addEventListener('blur', () => Object.keys(movement).forEach((key) => { movement[key] = false; }));
+    window.addEventListener('resize', keepInBounds);
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('button, a, input, video, .walker')) slashAt(event.clientX, event.clientY);
+    });
+    window.requestAnimationFrame(moveWalker);
+}

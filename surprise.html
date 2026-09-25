@@ -27,6 +27,13 @@
                 Thanks for all the laughs, the random adventures, and always having my
                 back. Here's to everything we've built so far and all the good times still ahead.
             </p>
+            <p>
+                This past year has reminded me how special it is to have someone who makes the
+                good days even better and the difficult days a little easier. I hope you know
+                that you can always count on me, just like I know I can count on you. No matter
+                where life takes us next, I am thankful for every conversation, every inside joke,
+                and every memory we still have waiting to make.
+            </p>
             <p class="signature">Appreciate you, man. Always. <span class="heart" aria-hidden="true"></span></p>
 
             <section class="memory-gallery" aria-labelledby="gallery-title">
@@ -101,6 +108,24 @@
                 </div>
             </section>
 
+            <section class="final-reveal" id="final-reveal" aria-labelledby="final-title" hidden>
+                <p class="section-kicker">You found the last memory</p>
+                <h2 class="section-title" id="final-title">One more thing...</h2>
+                <p>
+                    Eight memories, one incredible year, and so many more moments still to come.
+                    Thank you chard for the incredible year, pre alam mo naman na hindi ako ma show ng emotion,
+                    still i want to thank you for everything to make this possible and thank you for being my
+                    best friend. I am looking forward sa jowa mo HAHHA kimi, I'm always grateful and i appriciate
+                    Things that you do for our pagiging prens.
+                </p>
+                <p class="final-signature">Here is to us and everything ahead.</p>
+            </section>
+
+            <div class="message-actions">
+                <button class="download-button" type="button" id="download-memory">Save this memory</button>
+                <p class="action-note">Creates a printable PDF from your browser's print menu.</p>
+            </div>
+
             <section class="video-gallery" aria-labelledby="video-title">
                 <p class="section-kicker">Moving memories</p>
                 <h2 class="section-title" id="video-title">Three moments in motion</h2>
@@ -126,12 +151,23 @@
                     </div>
                 </div>
             </section>
+
+            <section class="next-surprise" aria-labelledby="next-surprise-title">
+                <p class="section-kicker">There is one more thing</p>
+                <h2 class="section-title" id="next-surprise-title">A message I wanted you to hear</h2>
+                <p class="section-note">The next page has one last surprise waiting for you.</p>
+                <a class="open-button next-surprise-link" href="unannounced.html">Open the next surprise</a>
+            </section>
         </section>
     </main>
 
     <script>
         const openButton = document.getElementById('open-surprise');
         const message = document.getElementById('message');
+        const finalReveal = document.getElementById('final-reveal');
+        const downloadButton = document.getElementById('download-memory');
+        const memoryCards = [...document.querySelectorAll('.memory-card')];
+        const flippedMemories = new Set();
         const colors = ['#f26b5e', '#f4bd55', '#9b83c4', '#6fb8a4'];
 
         function celebrate() {
@@ -155,13 +191,30 @@
             celebrate();
         });
 
-        document.querySelectorAll('.memory-card').forEach((card) => {
+        memoryCards.forEach((card, index) => {
             const button = card.querySelector('.card-button');
 
             button.addEventListener('click', () => {
                 const isFlipped = card.classList.toggle('is-flipped');
                 button.setAttribute('aria-label', isFlipped ? 'Show the meaning' : 'Reveal memory');
+
+                if (isFlipped) {
+                    flippedMemories.add(index);
+                } else {
+                    flippedMemories.delete(index);
+                }
+
+                if (flippedMemories.size === memoryCards.length) {
+                    finalReveal.hidden = false;
+                    finalReveal.classList.add('is-unlocked');
+                    finalReveal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    celebrate();
+                }
             });
+        });
+
+        downloadButton.addEventListener('click', () => {
+            window.print();
         });
     </script>
 </body>
